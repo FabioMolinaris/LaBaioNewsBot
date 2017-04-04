@@ -1,7 +1,5 @@
 package it.molis.newsBot;
 
-import java.time.LocalTime;
-
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -13,6 +11,7 @@ import it.molis.model.Model;
 public class BaioNewsBot extends TelegramLongPollingBot {
 
 	Model model = new Model();
+	SendMessage message = new SendMessage();
 	private long chat_id;
 
 	public void onUpdateReceived(Update update) {
@@ -21,10 +20,19 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 			// Set variables
 			chat_id = update.getMessage().getChatId();
 
-			SendMessage message = new SendMessage() // Create a message object
-													// object
-					.setChatId(chat_id).setText("Ciao! \n"
-							+ "Sono il NewsBot de La Baionetta, ogni sera alle 21 ti invierò gli ultimi aggiornamenti del tuo sito preferito");
+			message.setChatId(chat_id).setText("Ciao! \n " + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
+					+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
+
+			TimerExecutor te = new TimerExecutor();
+			CustomTimerTask ctt = new CustomTimerTask("invia", 365) {
+
+				@Override
+				public void execute() {
+					sendNotification();
+				}
+			};
+			te.startExecutionEveryDayAt(ctt, 19, 00, 00);
+
 			try {
 				sendMessage(message); // Sending our message object to user
 			} catch (TelegramApiException e) {
@@ -33,22 +41,11 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 		}
 	}
 
-	public boolean isTime() {
-		for (LocalTime i = LocalTime.MIN; i.isBefore(LocalTime.MAX); i.plusMinutes(1)) {
-			if (LocalTime.now().hashCode() == LocalTime.of(21, 00, 00, 0000).hashCode()) {
-				return true;
-			}
-		}return false;
-	}
-
-	public void sendNotification(){
-		SendMessage message = new SendMessage().setChatId(chat_id);
+	public void sendNotification() {
 		String message_text = "Sono le 21 e vi avviso di tutti gli ultimi articoli scritti!!\n\n";
-		if(isTime()){
-			for (Articolo a : model.sendNotification()) {
-				message_text += "L'articolo " + a.getTitolo() + "\n si trova al link " + a.getLink()
-						+ "\n ed è stato scritto da " + a.getPenna() + "\n\n";
-			}
+		for (Articolo a : model.sendNotification()) {
+			message_text += "L'articolo " + a.getTitolo() + "\n si trova al link " + a.getLink()
+					+ "\n ed è stato scritto da " + a.getPenna() + "\n\n";
 		}
 		message.setText(message_text);
 		try {

@@ -19,9 +19,6 @@ public class MainNewsBot {
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
-
-		bnb.sendNotification();
-
 	}
 
 }

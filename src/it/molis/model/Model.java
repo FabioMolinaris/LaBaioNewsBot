@@ -66,7 +66,6 @@ public class Model {
 		List <Articolo> articoliOggi = new ArrayList<>();
 		for(Articolo a : articoli){
 			if(a.getData().isAfter(ieri)){
-				System.out.println(a.getTitolo());
 				articoliOggi.add(a);
 			}
 		}
