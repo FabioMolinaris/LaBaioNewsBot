@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.telegram.telegrambots.api.methods.send.SendMessage;
+
 import it.molis.baionetta.beans.Articolo;
 import it.molis.baionetta.feed.Feed;
 import it.molis.baionetta.feed.FeedMessage;
@@ -31,7 +33,8 @@ public class Model {
 
 				if (message.getLink() != null) {
 
-					LocalDateTime date = LocalDateTime.parse(message.getPubDate(), DateTimeFormatter.RFC_1123_DATE_TIME);
+					LocalDateTime date = LocalDateTime.parse(message.getPubDate(),
+							DateTimeFormatter.RFC_1123_DATE_TIME);
 					Articolo a = new Articolo(message.getTitle(), message.getCategory(), creaPenna(message.getAuthor()),
 							message.getLink(), date);
 
@@ -42,30 +45,30 @@ public class Model {
 	}
 
 	private String creaPenna(String s) {
-		if(s.contains("Baionetta")){
+		if (s.contains("Baionetta")) {
 			return "La Baionetta";
 		}
-		if(s.contains("Fabio")){
+		if (s.contains("Fabio")) {
 			return "Fabio Molinaris";
 		}
-		if(s.contains("Daniele")){
+		if (s.contains("Daniele")) {
 			return "Daniele Barale";
 		}
-		if(s.contains("Darth")){
+		if (s.contains("Darth")) {
 			return "Darth Gender";
 		}
-		if(s.contains("Federico")){
+		if (s.contains("Federico")) {
 			return "Federico Montagnani";
 		}
 		return null;
 	}
 
-	public List<Articolo> sendNotification() {
+	public List<Articolo> sendNotification(SendMessage message) {
 		getArticoliFromRss();
 		LocalDateTime ieri = LocalDateTime.now().minusDays(1);
-		List <Articolo> articoliOggi = new ArrayList<>();
-		for(Articolo a : articoli){
-			if(a.getData().isAfter(ieri)){
+		List<Articolo> articoliOggi = new ArrayList<>();
+		for (Articolo a : articoli) {
+			if (a.getData().isAfter(ieri)) {
 				articoliOggi.add(a);
 			}
 		}

@@ -11,47 +11,77 @@ import it.molis.model.Model;
 public class BaioNewsBot extends TelegramLongPollingBot {
 
 	Model model = new Model();
-	SendMessage message = new SendMessage();
-	private long chat_id;
 
 	public void onUpdateReceived(Update update) {
 		// We check if the update has a message and the message has text
 		if (update.hasMessage() && update.getMessage().hasText()) {
 			// Set variables
-			chat_id = update.getMessage().getChatId();
+			long chat_id = update.getMessage().getChatId();
+
+			SendMessage message = new SendMessage();
 
 			message.setChatId(chat_id).setText("Ciao! \n " + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
 					+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
 
-			TimerExecutor te = new TimerExecutor();
-			CustomTimerTask ctt = new CustomTimerTask("invia", 365) {
+			if (update.getMessage().getText().equals("/start")) {
+				TimerExecutor te = new TimerExecutor();
+				CustomTimerTask ctt = new CustomTimerTask("invia", 365) {
 
-				@Override
-				public void execute() {
-					sendNotification();
+					@Override
+					public void execute() {
+						sendNotification(message);
+					}
+				};
+				te.startExecutionEveryDayAt(ctt, 19, 00, 00);
+			}
+			try {
+				sendMessage(message); // Sending our message object to user
+			} catch (TelegramApiException e) {
+				e.printStackTrace();
+			}
+
+			if (update.getMessage().getText().equals("/aggiornami")) {
+
+				for (Articolo a : model.sendNotification(message)) {
+					String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
+							+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
+
+					message.setText(message_notification);
+
+					try {
+						sendMessage(message); // Sending our message object to
+												// user
+					} catch (TelegramApiException e) {
+						e.printStackTrace();
+					}
 				}
-			};
-			te.startExecutionEveryDayAt(ctt, 19, 00, 00);
+			}
+		}
+	}
+
+	public void sendNotification(SendMessage message) {
+		String message_text = "Sono le 21 e vi avviso di tutti gli ultimi articoli scritti!!\n\n";
+
+		message.setText(message_text);
+
+		try {
+			sendMessage(message); // Sending our message object to user
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
+
+		for (Articolo a : model.sendNotification(message)) {
+			String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
+					+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
+
+			message.setText(message_notification);
 
 			try {
 				sendMessage(message); // Sending our message object to user
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
 			}
-		}
-	}
 
-	public void sendNotification() {
-		String message_text = "Sono le 21 e vi avviso di tutti gli ultimi articoli scritti!!\n\n";
-		for (Articolo a : model.sendNotification()) {
-			message_text += "L'articolo " + a.getTitolo() + "\n si trova al link " + a.getLink()
-					+ "\n ed è stato scritto da " + a.getPenna() + "\n\n";
-		}
-		message.setText(message_text);
-		try {
-			sendMessage(message); // Sending our message object to user
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
 		}
 	}
 
