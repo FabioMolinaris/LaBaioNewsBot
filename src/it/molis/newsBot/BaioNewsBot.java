@@ -1,5 +1,12 @@
 package it.molis.newsBot;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,16 +41,26 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 				e.printStackTrace();
 			}
 
-			if (update.getMessage().getText().equals("/start")) {
+			if (update.getMessage().getText().equals("/start")
+					|| update.getMessage().getText().equals("/start@BaioNewsBot")) {
 
 				IsAttivo isAttivo = new IsAttivo(chat_id);
 
-				if(!attivi.contains(isAttivo))
+				if (!attivi.contains(isAttivo)){
 					attivi.add(isAttivo);
+					try {
+						updateFileBackup();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 
 				for (IsAttivo ia : attivi) {
+
 					if (ia.getChat_id() == chat_id) {
+
 						if (ia.isAttivo()) {
+
 							String message_notification = "Sono già attivo su questa chat!\n";
 
 							message.setText(message_notification);
@@ -63,7 +80,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 								@Override
 								public void execute() {
-									sendNotification(message);
+									sendNotificationTimer(message);
 								}
 							};
 							te.startExecutionEveryDayAt(ctt, 19, 00, 00);
@@ -71,47 +88,110 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 					}
 				}
 			}
-			if (update.getMessage().getText().equals("/aggiornami")) {
+			if (update.getMessage().getText().equals("/aggiornami")
+					|| update.getMessage().getText().equals("/aggiornami@BaioNewsBot")) {
 
-				for (Articolo a : model.sendNotification(message)) {
-					String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
-							+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
-
-					message.setText(message_notification);
-
-					try {
-						sendMessage(message);
-					} catch (TelegramApiException e) {
-						e.printStackTrace();
-					}
-				}
+				sendNotificationAggiornami(message);
 			}
+
 		}
 	}
 
-	public void sendNotification(SendMessage message) {
+	private void updateFileBackup() throws IOException {
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("/home/ubuntu/Backup/BaioBackup.molis")));
+		for(IsAttivo ia : attivi){
+			String content = ""+ia.getChat_id()+"\n";
+			out.append(content);
+		}
+		out.close();
+	}
+
+	public void ripristinaBackup() throws NumberFormatException, IOException{
+		String s;
+		BufferedReader reader;
+
+		try {
+			reader = new BufferedReader(new FileReader("/home/ubuntu/Backup/BaioBackup.molis"));
+			while( (s = reader.readLine()) != null ){
+				IsAttivo ia = new IsAttivo(Long.valueOf(s.split("\n")[0]).longValue());
+				attivi.add(ia);
+			}
+			reader.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		for(IsAttivo ia : attivi){
+			ia.setAttivo(true);
+			SendMessage message = new SendMessage().setChatId(ia.getChat_id());
+			TimerExecutor te = new TimerExecutor();
+			CustomTimerTask ctt = new CustomTimerTask("backup", 365) {
+
+				@Override
+				public void execute() {
+					sendNotificationTimer(message);
+				}
+			};
+			te.startExecutionEveryDayAt(ctt, 19, 00, 00);
+		}
+	}
+
+	public void sendNotificationTimer(SendMessage message) {
+
 		String message_text = "Sono le 21 e vi avviso di tutti gli ultimi articoli scritti!!\n\n";
 
 		message.setText(message_text);
 
 		try {
-			sendMessage(message); // Sending our message object to user
+			sendMessage(message);
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
 
-		for (Articolo a : model.sendNotification(message)) {
-			String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
-					+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
+		sendNotification(message);
+	}
 
-			message.setText(message_notification);
+	public void sendNotificationAggiornami(SendMessage message) {
+
+		String message_text = "Eccomi! \nOra ti avviso di tutti gli ultimi articoli scritti!!\n\n";
+
+		message.setText(message_text);
+
+		try {
+			sendMessage(message);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
+
+		sendNotification(message);
+
+	}
+
+	public void sendNotification(SendMessage message) {
+
+		if (model.sendNotification(message).size() > 0) {
+			for (Articolo a : model.sendNotification(message)) {
+
+				String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
+						+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
+
+				message.setText(message_notification);
+
+				try {
+					sendMessage(message);
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+
+			message.setText("Oggi non è stato scritto niente\n");
 
 			try {
 				sendMessage(message); // Sending our message object to user
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
