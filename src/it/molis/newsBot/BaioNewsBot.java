@@ -32,15 +32,6 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 			SendMessage message = new SendMessage();
 
-			message.setChatId(chat_id).setText("Ciao! \n" + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
-					+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
-
-			try {
-				sendMessage(message); // Sending our message object to user
-			} catch (TelegramApiException e) {
-				e.printStackTrace();
-			}
-
 			if (update.getMessage().getText().equals("/start")
 					|| update.getMessage().getText().equals("/start@BaioNewsBot")) {
 
@@ -75,6 +66,16 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 						if (!ia.isAttivo()) {
 							ia.setAttivo(true);
+
+							message.setChatId(chat_id).setText("Ciao! \n" + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
+									+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
+
+							try {
+								sendMessage(message); // Sending our message object to user
+							} catch (TelegramApiException e) {
+								e.printStackTrace();
+							}
+
 							TimerExecutor te = new TimerExecutor();
 							CustomTimerTask ctt = new CustomTimerTask("invia", 365) {
 
@@ -83,7 +84,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 									sendNotificationTimer(message);
 								}
 							};
-							te.startExecutionEveryDayAt(ctt, 19, 00, 00);
+							te.startExecutionEveryDayAt(ctt, 21, 00, 00);
 						}
 					}
 				}
@@ -98,7 +99,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 	}
 
 	private void updateFileBackup() throws IOException {
-		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("/home/ubuntu/Backup/BaioBackup.molis")));
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("/BaioBackup.molis")));
 		for(IsAttivo ia : attivi){
 			String content = ""+ia.getChat_id()+"\n";
 			out.append(content);
@@ -111,7 +112,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 		BufferedReader reader;
 
 		try {
-			reader = new BufferedReader(new FileReader("/home/ubuntu/Backup/BaioBackup.molis"));
+			reader = new BufferedReader(new FileReader("/BaioBackup.molis"));
 			while( (s = reader.readLine()) != null ){
 				IsAttivo ia = new IsAttivo(Long.valueOf(s.split("\n")[0]).longValue());
 				attivi.add(ia);
@@ -132,7 +133,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 					sendNotificationTimer(message);
 				}
 			};
-			te.startExecutionEveryDayAt(ctt, 19, 00, 00);
+			te.startExecutionEveryDayAt(ctt, 21, 00, 00);
 		}
 	}
 
