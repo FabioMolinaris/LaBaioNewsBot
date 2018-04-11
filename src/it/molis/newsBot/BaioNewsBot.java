@@ -57,7 +57,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 							message.setText(message_notification);
 
 							try {
-								sendMessage(message);
+								execute(message);
 
 							} catch (TelegramApiException e) {
 								e.printStackTrace();
@@ -71,7 +71,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 									+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
 
 							try {
-								sendMessage(message); // Sending our message object to user
+								execute(message); // Sending our message object to user
 							} catch (TelegramApiException e) {
 								e.printStackTrace();
 							}
@@ -144,7 +144,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 		message.setText(message_text);
 
 		try {
-			sendMessage(message);
+			execute(message);
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
@@ -159,7 +159,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 		message.setText(message_text);
 
 		try {
-			sendMessage(message);
+			execute(message);
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
@@ -179,7 +179,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 				message.setText(message_notification);
 
 				try {
-					sendMessage(message);
+					execute(message);
 				} catch (TelegramApiException e) {
 					e.printStackTrace();
 				}
@@ -189,7 +189,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 			message.setText("Oggi non è stato scritto niente\n");
 
 			try {
-				sendMessage(message); // Sending our message object to user
+				execute(message); // Sending our message object to user
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
 			}
@@ -198,12 +198,12 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 	@Override
 	public String getBotUsername() {
-		return "BaioNewsBot";
+		return "BaioNewsBetaBot";
 	}
 
 	@Override
 	public String getBotToken() {
-		return "332251488:AAEdzEqn_ILhv7vHlfK6YqrLDSVwS9BL9_A";
+		return "549518382:AAHV_bpxepsJY9s1DnIKCq5bi0sRlQH5qCQ";
 	}
 
 }
