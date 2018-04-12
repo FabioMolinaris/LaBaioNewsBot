@@ -20,30 +20,35 @@ import it.molis.model.Model;
 
 public class BaioNewsBot extends TelegramLongPollingBot {
 
-	Model model = new Model();
+	Model model;
+	Set<IsAttivo> attivi;
+	SendMessage message;
 
-	Set<IsAttivo> attivi = new HashSet<>();
+	public BaioNewsBot() {
+		model = new Model();
+		attivi = new HashSet<>();
+		message = new SendMessage();
+	}
 
+	@Override
 	public void onUpdateReceived(Update update) {
 
 		if (update.hasMessage() && update.getMessage().hasText()) {
 
 			long chat_id = update.getMessage().getChatId();
 
-			SendMessage message = new SendMessage();
-
 			if (update.getMessage().getText().equals("/start")
 					|| update.getMessage().getText().equals("/start@BaioNewsBot")) {
 
 				IsAttivo isAttivo = new IsAttivo(chat_id);
 
-				if (!attivi.contains(isAttivo)){
+				if (!attivi.contains(isAttivo)) {
 					attivi.add(isAttivo);
-					try {
-						updateFileBackup();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					// try {
+					// updateFileBackup();
+					// } catch (IOException e) {
+					// e.printStackTrace();
+					// }
 				}
 
 				for (IsAttivo ia : attivi) {
@@ -67,9 +72,9 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 						if (!ia.isAttivo()) {
 							ia.setAttivo(true);
 
-							message.setChatId(chat_id).setText("Ciao! \n" + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
-									+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
-
+							message.setChatId(chat_id)
+									.setText("Ciao! \n" + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
+											+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
 							try {
 								execute(message); // Sending our message object to user
 							} catch (TelegramApiException e) {
@@ -81,7 +86,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 								@Override
 								public void execute() {
-									sendNotificationTimer(message);
+									sendNotificationTimer();
 								}
 							};
 							te.startExecutionEveryDayAt(ctt, 21, 00, 00);
@@ -92,7 +97,12 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 			if (update.getMessage().getText().equals("/aggiornami")
 					|| update.getMessage().getText().equals("/aggiornami@BaioNewsBot")) {
 
-				sendNotificationAggiornami(message);
+				sendNotificationAggiornami();
+			}
+			if (update.getMessage().getText().equals("ieri")
+					|| update.getMessage().getText().equals("/aggiornami@BaioNewsBot")) {
+
+				sendAccaddeIeri();
 			}
 
 		}
@@ -100,20 +110,20 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 	private void updateFileBackup() throws IOException {
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("/BaioBackup.molis")));
-		for(IsAttivo ia : attivi){
-			String content = ""+ia.getChat_id()+"\n";
+		for (IsAttivo ia : attivi) {
+			String content = "" + ia.getChat_id() + "\n";
 			out.append(content);
 		}
 		out.close();
 	}
 
-	public void ripristinaBackup() throws NumberFormatException, IOException{
+	public void ripristinaBackup() throws NumberFormatException, IOException {
 		String s;
 		BufferedReader reader;
 
 		try {
 			reader = new BufferedReader(new FileReader("/BaioBackup.molis"));
-			while( (s = reader.readLine()) != null ){
+			while ((s = reader.readLine()) != null) {
 				IsAttivo ia = new IsAttivo(Long.valueOf(s.split("\n")[0]).longValue());
 				attivi.add(ia);
 			}
@@ -122,22 +132,22 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 			e.printStackTrace();
 		}
 
-		for(IsAttivo ia : attivi){
+		for (IsAttivo ia : attivi) {
 			ia.setAttivo(true);
-			SendMessage message = new SendMessage().setChatId(ia.getChat_id());
+			message.setChatId(ia.getChat_id());
 			TimerExecutor te = new TimerExecutor();
 			CustomTimerTask ctt = new CustomTimerTask("backup", 365) {
 
 				@Override
 				public void execute() {
-					sendNotificationTimer(message);
+					sendNotificationTimer();
 				}
 			};
 			te.startExecutionEveryDayAt(ctt, 21, 00, 00);
 		}
 	}
 
-	public void sendNotificationTimer(SendMessage message) {
+	public void sendNotificationTimer() {
 
 		String message_text = "Sono le 21 e vi avviso di tutti gli ultimi articoli scritti!!\n\n";
 
@@ -149,29 +159,29 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 			e.printStackTrace();
 		}
 
-		sendNotification(message);
+		sendNotification();
 	}
 
-	public void sendNotificationAggiornami(SendMessage message) {
+	public void sendNotificationAggiornami() {
 
-		String message_text = "Eccomi! \nOra ti avviso di tutti gli ultimi articoli scritti!!\n\n";
+		if (model.getArticoliOggi().size() > 0) {
+			String message_text = "Eccomi! \nOra ti avviso di tutti gli ultimi articoli scritti!!\n\n";
+			message.setText(message_text);
 
-		message.setText(message_text);
+			try {
+				execute(message);
+			} catch (TelegramApiException e) {
+				e.printStackTrace();
+			}
 
-		try {
-			execute(message);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
+			sendNotification();
 		}
-
-		sendNotification(message);
-
 	}
 
-	public void sendNotification(SendMessage message) {
+	public void sendNotification() {
 
-		if (model.sendNotification(message).size() > 0) {
-			for (Articolo a : model.sendNotification(message)) {
+		if (model.getArticoliOggi().size() > 0) {
+			for (Articolo a : model.getArticoliOggi()) {
 
 				String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
 						+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
@@ -184,14 +194,24 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 					e.printStackTrace();
 				}
 			}
-		} else {
+		}
+	}
 
-			message.setText("Oggi non è stato scritto niente\n");
+	public void sendAccaddeIeri() {
 
-			try {
-				execute(message); // Sending our message object to user
-			} catch (TelegramApiException e) {
-				e.printStackTrace();
+		if (model.getAccaddeIeri().size() > 0) {
+			for (Articolo a : model.getAccaddeIeri()) {
+
+				String message_notification = "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
+						+ "\ned è stato scritto da " + a.getPenna() + "\nnel lontano " + a.getData().getYear()+"\n";
+
+				message.setText(message_notification);
+
+				try {
+					execute(message);
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

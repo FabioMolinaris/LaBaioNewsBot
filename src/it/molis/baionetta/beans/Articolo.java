@@ -1,22 +1,28 @@
 package it.molis.baionetta.beans;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
-public class Articolo implements Comparable<Articolo>{
+public class Articolo implements Comparable<Articolo> {
 
 	private String titolo;
-	private String mostrina;
-	private String penna;
+	private Mostrina mostrina;
+	private Penna penna;
 	private String link;
-	private LocalDateTime data;
+	private LocalDate data;
+	private Set<ParolaChiave> paroleChiave;
 
-	public Articolo(String titolo, String mostrina, String penna, String link, LocalDateTime data) {
+	public Articolo(String titolo, Mostrina mostrina, Penna penna, String link, LocalDate data) {
 		super();
 		this.titolo = titolo;
 		this.mostrina = mostrina;
 		this.penna = penna;
 		this.link = link;
 		this.data = data;
+		this.paroleChiave = new HashSet<>();
 	}
 
 	@Override
@@ -44,7 +50,7 @@ public class Articolo implements Comparable<Articolo>{
 		return result;
 	}
 
-	public LocalDateTime getData() {
+	public LocalDate getData() {
 		return this.data;
 	}
 
@@ -52,11 +58,11 @@ public class Articolo implements Comparable<Articolo>{
 		return link;
 	}
 
-	public String getMostrina() {
+	public Mostrina getMostrina() {
 		return mostrina;
 	}
 
-	public String getPenna() {
+	public Penna getPenna() {
 		return penna;
 	}
 
@@ -64,7 +70,7 @@ public class Articolo implements Comparable<Articolo>{
 		return titolo;
 	}
 
-	public void setData(LocalDateTime data) {
+	public void setData(LocalDate data) {
 		this.data = data;
 	}
 
@@ -72,11 +78,11 @@ public class Articolo implements Comparable<Articolo>{
 		this.link = link;
 	}
 
-	public void setMostrina(String mostrina) {
+	public void setMostrina(Mostrina mostrina) {
 		this.mostrina = mostrina;
 	}
 
-	public void setPenna(String penna) {
+	public void setPenna(Penna penna) {
 		this.penna = penna;
 	}
 
@@ -91,8 +97,20 @@ public class Articolo implements Comparable<Articolo>{
 
 	@Override
 	public String toString() {
-		return "" + titolo + "\n" + penna + "\n" + data;
+		return "" + titolo + "\n" + penna.getNome() + "\n"
+				+ data.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ITALY) + " " + data.getDayOfMonth() + " - "
+				+ data.getMonth().getDisplayName(TextStyle.FULL, Locale.ITALY) + " - " + data.getYear();
 	}
 
+	public Set<ParolaChiave> getParoleChiave() {
+		return paroleChiave;
+	}
 
+	public void setParoleChiave(Set<ParolaChiave> paroleChiave) {
+		this.paroleChiave = paroleChiave;
+	}
+
+	public void addParolaChiave(ParolaChiave pc) {
+		this.paroleChiave.add(pc);
+	}
 }
