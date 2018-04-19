@@ -1,6 +1,4 @@
-package it.molis.newsBot;
-
-import java.io.IOException;
+package it.molis.baionetta.newsBot;
 
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
@@ -16,17 +14,9 @@ public class MainNewsBot {
 		TelegramBotsApi botsApi = new TelegramBotsApi();
 
 		BaioNewsBot bnb = new BaioNewsBot();
-	/*
-		try {
-			//bnb.ripristinaBackup();
-		} catch (NumberFormatException e1) {
-			 TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	*/
+
+		bnb.getAttivi();
+
 		try {
 			botsApi.registerBot(bnb);
 		} catch (TelegramApiException e) {

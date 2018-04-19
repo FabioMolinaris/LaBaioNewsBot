@@ -1,12 +1,12 @@
-package it.molis.newsBot;
+package it.molis.baionetta.beans;
 
-public class IsAttivo {
+public class Chat {
 
 	private boolean isAttivo;
-	private long chat_id;
+	private long chatId;
 
-	public IsAttivo(long chat_id) {
-		this.chat_id = chat_id;
+	public Chat(long chat_id) {
+		this.chatId = chat_id;
 	}
 
 	public boolean isAttivo() {
@@ -17,19 +17,19 @@ public class IsAttivo {
 		this.isAttivo = isAttivo;
 	}
 
-	public long getChat_id() {
-		return chat_id;
+	public long getChatId() {
+		return chatId;
 	}
 
-	public void setChat_id(long chat_id) {
-		this.chat_id = chat_id;
+	public void setChatId(long chat_id) {
+		this.chatId = chat_id;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (chat_id ^ (chat_id >>> 32));
+		result = prime * result + (int) (chatId ^ (chatId >>> 32));
 		return result;
 	}
 
@@ -41,10 +41,9 @@ public class IsAttivo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IsAttivo other = (IsAttivo) obj;
-		if (chat_id != other.chat_id)
+		Chat other = (Chat) obj;
+		if (chatId != other.chatId)
 			return false;
 		return true;
 	}
-
 }

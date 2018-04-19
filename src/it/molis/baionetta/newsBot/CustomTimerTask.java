@@ -1,4 +1,4 @@
-package it.molis.newsBot;
+package it.molis.baionetta.newsBot;
 
 public abstract class CustomTimerTask {
     private String taskName = ""; ///< Task name

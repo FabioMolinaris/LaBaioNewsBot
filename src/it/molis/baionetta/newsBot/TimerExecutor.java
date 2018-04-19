@@ -1,4 +1,4 @@
-package it.molis.newsBot;
+package it.molis.baionetta.newsBot;
 
 import java.time.Clock;
 import java.time.Duration;

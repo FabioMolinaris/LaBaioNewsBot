@@ -1,4 +1,4 @@
-package it.molis.model;
+package it.molis.baionetta.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,18 +13,22 @@ import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import it.molis.baionetta.beans.Articolo;
+import it.molis.baionetta.beans.Chat;
 import it.molis.baionetta.beans.Mostrina;
 import it.molis.baionetta.beans.ParolaChiave;
 import it.molis.baionetta.beans.Penna;
 import it.molis.baionetta.dao.ArticoloDAO;
+import it.molis.baionetta.dao.ChatDAO;
 
 public class Model {
 
 	private ArticoloDAO dao = new ArticoloDAO();
+	private ChatDAO chatDao = new ChatDAO();
 
 	private Set<Articolo> articoli = new HashSet<>();
 	private Set<Penna> penne = new HashSet<>();
 	private Set<Mostrina> mostrine = new HashSet<>();
+	Set<Chat> chat = new HashSet<>();
 
 	SimpleGraph<Articolo, DefaultWeightedEdge> grafo;
 
@@ -32,6 +36,7 @@ public class Model {
 		articoli.addAll(dao.getAll());
 		mostrine.addAll(dao.getAllMostrine());
 		penne.addAll(dao.getAllPenne());
+		chat.addAll(chatDao.getAll());
 		creaGrafo();
 	}
 
@@ -52,8 +57,14 @@ public class Model {
 		LocalDate oggi = LocalDate.now();
 		Set<Articolo> articoliIeri = new HashSet<>();
 		for (Articolo a : articoli) {
-			if (a.getData().getMonth().equals(oggi.getMonth()) && a.getData().getDayOfMonth() == oggi.getDayOfMonth()) {
-				articoliIeri.add(a);
+			if (!a.getMostrina().getNome().equals("Dispaccio")
+					&& !a.getMostrina().getNome().equals("Gerarchia parallela")
+					&& !a.getMostrina().getNome().equals("Salmerìa")) {
+				if (a.getData().getMonth().equals(oggi.getMonth())
+						&& a.getData().getDayOfMonth() == oggi.getDayOfMonth()
+						&& a.getData().getYear() != oggi.getYear()) {
+					articoliIeri.add(a);
+				}
 			}
 		}
 		return orderByDate(articoliIeri);
@@ -131,4 +142,11 @@ public class Model {
 		return articoliOrdinati;
 	}
 
+	public Set<Chat> getAllChat() {
+		return chat;
+	}
+
+	public void addChat(Chat chat) {
+		chatDao.addChat(chat);
+	}
 }
