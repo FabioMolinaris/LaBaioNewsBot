@@ -4,6 +4,7 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import it.molis.baionetta.model.Model;
 
 public class MainNewsBot {
 
@@ -13,9 +14,12 @@ public class MainNewsBot {
 
 		TelegramBotsApi botsApi = new TelegramBotsApi();
 
-		BaioNewsBot bnb = new BaioNewsBot();
+		Model model = new Model();
 
-		bnb.getAttivi();
+		BaioNewsBot bnb = new BaioNewsBot(model);
+
+		model.setBot(bnb);
+		model.getAttivi();
 
 		try {
 			botsApi.registerBot(bnb);
