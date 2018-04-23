@@ -1,6 +1,5 @@
 package it.molis.baionetta.timerTask;
 
-import java.time.LocalTime;
 import java.util.TimerTask;
 
 import it.molis.baionetta.beans.Chat;
@@ -17,7 +16,6 @@ public class TimerTaskOggi extends TimerTask {
 	}
 
 	public void run() {
-		//baioNewsBot.sendNotificationTimerOggi(chat);
-		System.out.println(LocalTime.now());
+		baioNewsBot.sendNotificationTimerOggi(chat);
 	}
 }
