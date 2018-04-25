@@ -64,8 +64,6 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 
 					attivi.add(isAttivo);
 					updateDBAttivi(isAttivo);
-
-					model.newTask(isAttivo);
 				}
 			}
 			if (update.getMessage().getText().equals("/oggi")) {

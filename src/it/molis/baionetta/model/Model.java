@@ -120,10 +120,8 @@ public class Model {
 		chatDao.addChat(chat);
 	}
 
-	public void newTask(Chat isAttivo) {
-		isAttivo.setAttivo(true);
-
-		TimerTaskOggi ttOggi = new TimerTaskOggi(baioNewsBot, isAttivo);
+	public void newTask() {
+		TimerTaskOggi ttOggi = new TimerTaskOggi(baioNewsBot);
 		ScheduledExecutorService timerOggi = Executors.newScheduledThreadPool(1);
 
 		long dayInSeconds = 86400;
@@ -135,7 +133,7 @@ public class Model {
 		//ttOggi.run();
 
 
-		TimerTaskIeri ttIeri = new TimerTaskIeri(baioNewsBot, isAttivo);
+		TimerTaskIeri ttIeri = new TimerTaskIeri(baioNewsBot);
 		ScheduledExecutorService timerIeri = Executors.newScheduledThreadPool(1);
 
 		long firstTimeIeri = Duration.between(LocalTime.now(), LocalTime.of(17, 00)).getSeconds();
@@ -148,9 +146,7 @@ public class Model {
 
 	public void getAttivi() {
 		attivi.addAll(getAllChat());
-		for (Chat c : attivi)
-			newTask(c);
-
+		newTask();
 		baioNewsBot.setAttivi(attivi);
 	}
 
