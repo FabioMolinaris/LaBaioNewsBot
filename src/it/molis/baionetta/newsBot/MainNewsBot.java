@@ -20,6 +20,7 @@ public class MainNewsBot {
 
 		model.setBot(bnb);
 		model.getAttivi();
+		model.newTask();
 
 		try {
 			botsApi.registerBot(bnb);

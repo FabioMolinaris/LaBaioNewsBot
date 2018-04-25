@@ -131,7 +131,7 @@ public class Model {
 
 		timerOggi.scheduleWithFixedDelay(ttOggi, firstTimeOggi, dayInSeconds, TimeUnit.SECONDS);
 		//ttOggi.run();
-
+		System.out.println("Task oggi "+firstTimeOggi);
 
 		TimerTaskIeri ttIeri = new TimerTaskIeri(baioNewsBot);
 		ScheduledExecutorService timerIeri = Executors.newScheduledThreadPool(1);
@@ -142,11 +142,11 @@ public class Model {
 
 		timerIeri.scheduleWithFixedDelay(ttIeri, firstTimeIeri, dayInSeconds, TimeUnit.SECONDS);
 		//ttIeri.run();
+		System.out.println("Task ieri "+firstTimeIeri);
 	}
 
 	public void getAttivi() {
 		attivi.addAll(getAllChat());
-		newTask();
 		baioNewsBot.setAttivi(attivi);
 	}
 
