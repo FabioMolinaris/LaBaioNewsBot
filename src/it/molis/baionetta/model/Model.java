@@ -150,7 +150,7 @@ public class Model {
 		attivi.addAll(getAllChat());
 		for (Chat c : attivi)
 			newTask(c);
-		
+
 		baioNewsBot.setAttivi(attivi);
 	}
 

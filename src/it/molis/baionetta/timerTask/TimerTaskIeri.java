@@ -16,6 +16,6 @@ public class TimerTaskIeri extends TimerTask {
 	}
 
 	public void run() {
-		baioNewsBot.sendNotificationTimerIeri(chat);
+		baioNewsBot.sendNotificationTimerIeri();
 	}
 }
