@@ -55,7 +55,9 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 				if (nuovo) {
 					message.setChatId(chat_id);
 					message.setText("Ciao! \n" + "Sono il NewsBot de La Baionetta, ogni sera alle 21 "
-							+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito");
+							+ "ti invierò gli ultimi aggiornamenti del tuo sito preferito; "
+							+ "alle 17, invece, invierò il meglio di quello che è "
+							+ "accaduto oggi negli scorsi anni");
 					try {
 						execute(message); // Sending our message object to user
 					} catch (TelegramApiException e) {
@@ -97,9 +99,11 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 				message.setChatId(c.getChatId());
 				message.setText(message_text);
 				for (Articolo a : articoliDaInviare) {
-					message_text = message_text + "\nL'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
-							+ "\ned è stato scritto da " + a.getPenna() + "\n\n";
+					message_text = message_text + "L'articolo " + "<a href=\"" + a.getLink() + "\">" + a.getTitolo()
+							+ "</a> \n" + "è stato scritto da <b>" + a.getPenna() + "</b>" + "\n________________\n";
 					message.setText(message_text);
+					message.disableWebPagePreview();
+					message.enableHtml(true);
 				}
 				try {
 					execute(message);
@@ -118,10 +122,12 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 				message.setChatId(c.getChatId());
 				message.setText(message_text);
 				for (Articolo a : model.getAccaddeIeri()) {
-					message_text = message_text + "L'articolo " + a.getTitolo() + "\nsi trova al link " + a.getLink()
-							+ "\ned è stato scritto da " + a.getPenna() + "\nnel lontano " + a.getData().getYear()
-							+ "\n";
+					message_text = message_text + "L'articolo " + "<a href=\"" + a.getLink() + "\">" + a.getTitolo()
+							+ "</a> \n" + "scritto da <b>" + a.getPenna() + "</b>\n" + "è stato scritto nel lontano "
+							+ a.getData().getYear() + "\n________________\n";
 					message.setText(message_text);
+					message.disableWebPagePreview();
+					message.enableHtml(true);
 				}
 				try {
 					execute(message);
