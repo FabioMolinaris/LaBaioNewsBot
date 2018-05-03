@@ -46,7 +46,7 @@ public class Model {
 		LocalDate oggi = LocalDate.now();
 		LocalDate ieri = LocalDate.now().minusDays(1);
 		Set<Articolo> articoliOggi = new HashSet<>();
-		for (Articolo a : articoli) {
+		for (Articolo a : dao.getAll()) {
 			if (a.getData().equals(ieri) || a.getData().equals(oggi)) {
 				articoliOggi.add(a);
 			}
@@ -58,7 +58,7 @@ public class Model {
 
 		LocalDate oggi = LocalDate.now();
 		Set<Articolo> articoliIeri = new HashSet<>();
-		for (Articolo a : articoli) {
+		for (Articolo a : dao.getAll()) {
 			if (!a.getMostrina().getNome().equals("Dispaccio")
 					&& !a.getMostrina().getNome().equals("Gerarchia parallela")
 					&& !a.getMostrina().getNome().equals("Salmerìa")
@@ -91,7 +91,7 @@ public class Model {
 
 	public List<Articolo> getArticoloFromTitolo(String titolo) {
 		Set<Articolo> trovati = new HashSet<>();
-		for (Articolo a : articoli) {
+		for (Articolo a : dao.getAll()) {
 			if (a.getTitolo().contains(titolo)) {
 				trovati.add(a);
 			}
@@ -107,7 +107,7 @@ public class Model {
 
 	public List<Articolo> getAllArticoliOrderByDate() {
 		List<Articolo> articoliOrdinati = new ArrayList<>();
-		articoliOrdinati.addAll(articoli);
+		articoliOrdinati.addAll(dao.getAll());
 		Collections.sort(articoliOrdinati);
 		return articoliOrdinati;
 	}
