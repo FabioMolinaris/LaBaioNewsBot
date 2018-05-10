@@ -19,6 +19,7 @@ import it.molis.baionetta.beans.Penna;
 import it.molis.baionetta.dao.ArticoloDAO;
 import it.molis.baionetta.dao.ChatDAO;
 import it.molis.baionetta.newsBot.BaioNewsBot;
+import it.molis.baionetta.timerTask.KeepAliveTask;
 import it.molis.baionetta.timerTask.TimerTaskIeri;
 import it.molis.baionetta.timerTask.TimerTaskOggi;
 
@@ -36,10 +37,10 @@ public class Model {
 	private Set<Chat> attivi = new HashSet<>();
 
 	public Model() {
-		articoli.addAll(dao.getAll());
-		mostrine.addAll(dao.getAllMostrine());
-		penne.addAll(dao.getAllPenne());
-		chat.addAll(chatDao.getAll());
+		this.articoli.addAll(dao.getAll());
+		this.mostrine.addAll(dao.getAllMostrine());
+		this.penne.addAll(dao.getAllPenne());
+		this.chat.addAll(chatDao.getAll());
 	}
 
 	public List<Articolo> getArticoliOggi() {
@@ -121,6 +122,7 @@ public class Model {
 	}
 
 	public void newTask() {
+		//Task 1
 		TimerTaskOggi ttOggi = new TimerTaskOggi(baioNewsBot);
 		ScheduledExecutorService timerOggi = Executors.newScheduledThreadPool(1);
 
@@ -133,6 +135,7 @@ public class Model {
 		//ttOggi.run();
 		System.out.println("Task oggi "+firstTimeOggi);
 
+		//Task 2
 		TimerTaskIeri ttIeri = new TimerTaskIeri(baioNewsBot);
 		ScheduledExecutorService timerIeri = Executors.newScheduledThreadPool(1);
 
@@ -143,11 +146,20 @@ public class Model {
 		timerIeri.scheduleWithFixedDelay(ttIeri, firstTimeIeri, dayInSeconds, TimeUnit.SECONDS);
 		//ttIeri.run();
 		System.out.println("Task ieri "+firstTimeIeri);
+
+		//Task 3
+		KeepAliveTask kATasck = new KeepAliveTask(dao);
+		ScheduledExecutorService timerAlive = Executors.newScheduledThreadPool(1);
+
+		long delay = 1800;
+
+		timerAlive.scheduleAtFixedRate(kATasck, delay, delay, TimeUnit.SECONDS);
+		kATasck.run();
 	}
 
 	public void getAttivi() {
-		attivi.addAll(getAllChat());
-		baioNewsBot.setAttivi(attivi);
+		this.attivi.addAll(getAllChat());
+		this.baioNewsBot.setAttivi(attivi);
 	}
 
 	public void setBot(BaioNewsBot bnb) {

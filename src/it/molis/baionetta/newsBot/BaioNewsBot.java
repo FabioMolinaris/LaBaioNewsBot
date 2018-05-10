@@ -14,14 +14,14 @@ import it.molis.baionetta.model.Model;
 
 public class BaioNewsBot extends TelegramLongPollingBot {
 
-	Model model;
-	Set<Chat> attivi;
-	SendMessage message;
-	Set<Articolo> artInviati = new HashSet<>();
+	private Model model;
+	private Set<Chat> attivi;
+	private SendMessage message;
+	private Set<Articolo> artInviati = new HashSet<>();
 
 	public BaioNewsBot(Model model) {
-		attivi = new HashSet<>();
-		message = new SendMessage();
+		this.attivi = new HashSet<>();
+		this.message = new SendMessage();
 		this.model = model;
 	}
 
@@ -104,6 +104,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 					message.setText(message_text);
 					message.disableWebPagePreview();
 					message.enableHtml(true);
+					artInviati.add(a);
 				}
 				try {
 					execute(message);

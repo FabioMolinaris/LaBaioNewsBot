@@ -6,7 +6,7 @@ import it.molis.baionetta.newsBot.BaioNewsBot;
 
 public class TimerTaskOggi extends TimerTask {
 
-	BaioNewsBot baioNewsBot;
+	private BaioNewsBot baioNewsBot;
 
 	public TimerTaskOggi(BaioNewsBot baioNewsBot) {
 		this.baioNewsBot = baioNewsBot;
