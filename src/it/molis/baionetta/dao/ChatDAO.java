@@ -47,7 +47,7 @@ public class ChatDAO {
 			final String sql = "INSERT INTO baionettaBot.chat (idChat)" + " VALUES (?)";
 
 			PreparedStatement st = conn.prepareStatement(sql);
-			st.setInt(1, (int) chat.getChatId());
+			st.setLong(1, chat.getChatId());
 			st.executeUpdate();
 			st.close();
 

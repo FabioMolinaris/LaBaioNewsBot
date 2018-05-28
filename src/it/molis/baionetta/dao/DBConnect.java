@@ -8,18 +8,16 @@ import com.mchange.v2.c3p0.DataSources;
 
 public class DBConnect {
 
-	private static String jdbcURL = "jdbc:mysql://localhost/baionetta?autoReconnect=true";
+	private static String jdbcURL = "jdbc:mysql://192.168.1.166/baionetta?autoReconnect=true";
 
 	private static DataSource ds ;
 
 	public static Connection getConnection() {
 
 		if(ds==null) {
-			// initialize DataSource
 			try {
-				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL,"fabio", " ")) ;
+				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL,"fabio", "")) ;
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.exit(1);
 			}
@@ -28,7 +26,6 @@ public class DBConnect {
 			Connection c = ds.getConnection() ;
 			return c ;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null ;
 		}

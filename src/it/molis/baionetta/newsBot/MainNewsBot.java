@@ -21,7 +21,7 @@ public class MainNewsBot {
 		model.setBot(bnb);
 		model.getAttivi();
 		model.newTask();
-		System.out.println("v2.2.2");
+		System.out.println("v2.2.3");
 
 		try {
 			botsApi.registerBot(bnb);
