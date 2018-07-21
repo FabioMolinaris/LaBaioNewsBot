@@ -10,24 +10,24 @@ public class DBConnect {
 
 	private static String jdbcURL = "jdbc:mysql://192.168.1.166/baionetta?autoReconnect=true";
 
-	private static DataSource ds ;
+	private static DataSource ds;
 
 	public static Connection getConnection() {
 
-		if(ds==null) {
+		if (ds == null) {
 			try {
-				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL,"fabio", "")) ;
+				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", "gtik9328"));
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.exit(1);
 			}
 		}
 		try {
-			Connection c = ds.getConnection() ;
-			return c ;
+			Connection c = ds.getConnection();
+			return c;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null ;
+			return null;
 		}
 	}
 }

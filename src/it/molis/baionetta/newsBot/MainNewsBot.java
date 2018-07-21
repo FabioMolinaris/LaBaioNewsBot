@@ -5,6 +5,7 @@ import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import it.molis.baionetta.model.Model;
+import it.molis.baionetta.newsBot.BaioNewsBot;
 
 public class MainNewsBot {
 
@@ -17,17 +18,17 @@ public class MainNewsBot {
 		Model model = new Model();
 
 		BaioNewsBot bnb = new BaioNewsBot(model);
-
-		model.setBot(bnb);
-		model.getAttivi();
-		model.newTask();
-		System.out.println("v3.0.0");
-
+		
 		try {
 			botsApi.registerBot(bnb);
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
+		
+		model.setBot(bnb);
+		model.getAttivi();
+		model.newTask();
+		System.out.println("v3.0.0");	
 	}
 
 }

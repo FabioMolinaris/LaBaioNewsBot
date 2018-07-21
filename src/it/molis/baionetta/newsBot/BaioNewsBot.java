@@ -15,13 +15,10 @@ import it.molis.baionetta.model.Model;
 public class BaioNewsBot extends TelegramLongPollingBot {
 
 	private Model model;
-	private Set<Chat> attivi;
-	private SendMessage message;
+	private SendMessage message = new SendMessage();
 	private Set<Articolo> artInviati = new HashSet<>();
 
 	public BaioNewsBot(Model model) {
-		this.attivi = new HashSet<>();
-		this.message = new SendMessage();
 		this.model = model;
 	}
 
@@ -38,7 +35,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 				Chat isAttivo = new Chat(chat_id);
 				boolean nuovo = true;
 
-				for (Chat ia : attivi) {
+				for (Chat ia : model.getAllChat()) {
 					if (ia.getChatId() == chat_id) {
 
 						String message_notification = "Sono già attivo su questa chat!\n";
@@ -64,7 +61,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 						e.printStackTrace();
 					}
 
-					attivi.add(isAttivo);
+					model.getAllChat().add(isAttivo);
 					updateDBAttivi(isAttivo);
 				}
 			}
@@ -78,7 +75,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 	}
 
 	public void setAttivi(Set<Chat> attivi) {
-		this.attivi.addAll(attivi);
+		model.getAllChat().addAll(attivi);
 	}
 
 	private void updateDBAttivi(Chat isAttivo) {
@@ -94,7 +91,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 					articoliDaInviare.add(a);
 
 		if (!articoliDaInviare.isEmpty()) {
-			for (Chat c : attivi) {
+			for (Chat c : model.getAllChat()) {
 				String message_text = "Sono le 21 e vi avviso di tutti gli ultimi articoli scritti!!\n\n";
 				message.setChatId(c.getChatId());
 				message.setText(message_text);
@@ -118,7 +115,7 @@ public class BaioNewsBot extends TelegramLongPollingBot {
 	public void sendNotificationTimerIeri() {
 
 		if (model.getAccaddeIeri().size() > 0) {
-			for (Chat c : attivi) {
+			for (Chat c : model.getAllChat()) {
 				String message_text = "Sono le 17 e sono nostalgico, oggi (ma negli anni passati) è stato scritto: \n\n";
 				message.setChatId(c.getChatId());
 				message.setText(message_text);

@@ -66,13 +66,29 @@ public class ArticoloDAO {
 	}
 
 	public Set<Articolo> getAllArticoli() {
+		final String sql = "SELECT titolo, mostrina, penna, link, data FROM articolo";
+		Set<Articolo> articoli = new HashSet<>();
 
-		if(!articoli.isEmpty())
-			return new HashSet<Articolo>(articoli.values());
-		else{
-			getAll();
-			return getAllArticoli();
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				Articolo a = new Articolo(rs.getString("titolo"), new Mostrina(rs.getString("mostrina")),
+						new Penna(rs.getString("penna")), rs.getString("link"), (rs.getDate("data").toLocalDate()));
+				articoli.add(a);
+			}
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
 		}
+
+		return articoli;
 	}
 
 	public Set<Penna> getAllPenne() {

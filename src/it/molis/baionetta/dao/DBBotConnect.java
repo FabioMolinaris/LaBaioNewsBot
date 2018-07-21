@@ -16,7 +16,7 @@ public class DBBotConnect {
 
 		if (ds == null) {
 			try {
-				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", ""));
+				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", "gtik9328"));
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.exit(1);
