@@ -33,5 +33,10 @@
   		<artifactId>c3p0</artifactId>
   		<version>0.9.5.2</version>
   	</dependency>
+  	<dependency>
+  		<groupId>org.jsoup</groupId>
+  		<artifactId>jsoup</artifactId>
+  		<version>1.10.2</version>
+  	</dependency>
   </dependencies>
 </project>

@@ -20,12 +20,14 @@ import it.molis.baionetta.dao.ArticoloDAO;
 import it.molis.baionetta.dao.ChatDAO;
 import it.molis.baionetta.newsBot.BaioNewsBot;
 import it.molis.baionetta.timerTask.KeepAliveTask;
+import it.molis.baionetta.timerTask.TimerTaskFeed;
 import it.molis.baionetta.timerTask.TimerTaskIeri;
 import it.molis.baionetta.timerTask.TimerTaskOggi;
 
 public class Model {
 
 	private BaioNewsBot baioNewsBot;
+	private Updater updater;
 
 	private ArticoloDAO dao = new ArticoloDAO();
 	private ChatDAO chatDao = new ChatDAO();
@@ -41,6 +43,7 @@ public class Model {
 		this.mostrine.addAll(dao.getAllMostrine());
 		this.penne.addAll(dao.getAllPenne());
 		this.chat.addAll(chatDao.getAll());
+		this.updater = new Updater();
 	}
 
 	public List<Articolo> getArticoliOggi() {
@@ -62,8 +65,7 @@ public class Model {
 		for (Articolo a : dao.getAll()) {
 			if (!a.getMostrina().getNome().equals("Dispaccio")
 					&& !a.getMostrina().getNome().equals("Gerarchia parallela")
-					&& !a.getMostrina().getNome().equals("Salmerìa")
-					&& !a.getMostrina().getNome().equals("")) {
+					&& !a.getMostrina().getNome().equals("Salmerìa") && !a.getMostrina().getNome().equals("")) {
 				if (a.getData().getMonth().equals(oggi.getMonth())
 						&& a.getData().getDayOfMonth() == oggi.getDayOfMonth()
 						&& a.getData().getYear() != oggi.getYear()) {
@@ -122,32 +124,32 @@ public class Model {
 	}
 
 	public void newTask() {
-		//Task 1
+		// Task 1
 		TimerTaskOggi ttOggi = new TimerTaskOggi(baioNewsBot);
 		ScheduledExecutorService timerOggi = Executors.newScheduledThreadPool(1);
 
 		long dayInSeconds = 86400;
 		long firstTimeOggi = Duration.between(LocalTime.now(), LocalTime.of(21, 00)).getSeconds();
-		if(firstTimeOggi < 0)
+		if (firstTimeOggi < 0)
 			firstTimeOggi = dayInSeconds + firstTimeOggi;
 
 		timerOggi.scheduleWithFixedDelay(ttOggi, firstTimeOggi, dayInSeconds, TimeUnit.SECONDS);
-		//ttOggi.run();
-		System.out.println("Task oggi "+firstTimeOggi);
+		// ttOggi.run();
+		System.out.println("Task oggi " + firstTimeOggi);
 
-		//Task 2
+		// Task 2
 		TimerTaskIeri ttIeri = new TimerTaskIeri(baioNewsBot);
 		ScheduledExecutorService timerIeri = Executors.newScheduledThreadPool(1);
 
 		long firstTimeIeri = Duration.between(LocalTime.now(), LocalTime.of(17, 00)).getSeconds();
-		if(firstTimeIeri < 0)
+		if (firstTimeIeri < 0)
 			firstTimeIeri = dayInSeconds + firstTimeIeri;
 
 		timerIeri.scheduleWithFixedDelay(ttIeri, firstTimeIeri, dayInSeconds, TimeUnit.SECONDS);
-		//ttIeri.run();
-		System.out.println("Task ieri "+firstTimeIeri);
+		// ttIeri.run();
+		System.out.println("Task ieri " + firstTimeIeri);
 
-		//Task 3
+		// Task 3
 		KeepAliveTask kATasck = new KeepAliveTask(dao);
 		ScheduledExecutorService timerAlive = Executors.newScheduledThreadPool(1);
 
@@ -155,6 +157,15 @@ public class Model {
 
 		timerAlive.scheduleAtFixedRate(kATasck, delay, delay, TimeUnit.SECONDS);
 		kATasck.run();
+		
+		// Task 4
+		TimerTaskFeed ttFeed = new TimerTaskFeed(updater);
+		ScheduledExecutorService timerFeed = Executors.newScheduledThreadPool(1);
+
+		long delayFeed = 1805;
+
+		timerFeed.scheduleAtFixedRate(ttFeed, delayFeed, delayFeed, TimeUnit.SECONDS);
+		ttFeed.run();
 	}
 
 	public void getAttivi() {
@@ -165,4 +176,6 @@ public class Model {
 	public void setBot(BaioNewsBot bnb) {
 		this.baioNewsBot = bnb;
 	}
+
+	
 }

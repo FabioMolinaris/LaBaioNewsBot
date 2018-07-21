@@ -1,6 +1,7 @@
 package it.molis.baionetta.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -91,6 +92,129 @@ public class ArticoloDAO {
 		else{
 			getAll();
 			return getAllMostrine();
+		}
+	}
+	
+	public void addArticolo(Articolo a) {
+
+		final String sql = "INSERT INTO articolo (titolo, mostrina, penna, link, data)" + " VALUES (?, ?, ?, ?, ?)";
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			st.setString(1, a.getTitolo());
+			st.setString(2, a.getMostrina().getNome());
+			st.setString(3, a.getPenna().getNome());
+			st.setString(4, a.getLink());
+			String data = "" + a.getData().getYear() + "-" + a.getData().getMonthValue() + "-"
+					+ a.getData().getDayOfMonth();
+			st.setDate(5, Date.valueOf(data));
+
+			st.executeUpdate();
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
+		}
+	}
+
+	public void addParoleChiave(ParolaChiave pc) {
+
+		final String sql = "INSERT INTO parolaChiave (parola, link, peso)" + " VALUES (?, ?, ?)";
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			st.setString(1, pc.getParola());
+			st.setString(2, pc.getLink());
+			st.setInt(3, pc.getPeso());
+
+			st.executeUpdate();
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
+		}
+	}
+
+	public Set<ParolaChiave> getAllParoleChiave(Articolo a) {
+
+		final String sql = "SELECT parola, link, peso FROM parolaChiave WHERE link=?";
+
+		Set<ParolaChiave> paroleChiave = new HashSet<ParolaChiave>();
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			st.setString(1, a.getLink());
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				ParolaChiave pc = new ParolaChiave(rs.getString("parola"), rs.getString("link"), rs.getInt("peso"));
+				paroleChiave.add(pc);
+			}
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
+		}
+
+		return paroleChiave;
+
+	}
+
+	public void addPenna(Penna p) {
+
+		final String sql = "INSERT INTO penna (nome) VALUES (?)";
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			st.setString(1, p.getNome());
+
+			st.executeUpdate();
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
+		}
+	}
+	
+	public void addMostrina(Mostrina m) {
+
+		final String sql = "INSERT INTO mostrina (nome) VALUES (?)";
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+
+			st.setString(1, m.getNome());
+
+			st.executeUpdate();
+
+			st.close();
+			conn.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore di connessione al Database.");
 		}
 	}
 }
