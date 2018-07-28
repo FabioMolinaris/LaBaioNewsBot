@@ -157,6 +157,7 @@ public class Model {
 
 		timerAlive.scheduleAtFixedRate(kATasck, delay, delay, TimeUnit.SECONDS);
 		kATasck.run();
+		System.out.println("KeepAliveTask");
 		
 		// Task 4
 		TimerTaskFeed ttFeed = new TimerTaskFeed(updater);
@@ -166,6 +167,7 @@ public class Model {
 
 		timerFeed.scheduleAtFixedRate(ttFeed, delayFeed, delayFeed, TimeUnit.SECONDS);
 		ttFeed.run();
+		System.out.println("TimerTaskFeed");
 	}
 
 	public void getAttivi() {

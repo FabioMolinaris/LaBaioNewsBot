@@ -19,6 +19,7 @@ public class Updater {
 
 	private Set<Articolo> articoliRSS = new HashSet<>();
 	private Set<Articolo> articoliDB = new HashSet<>();
+	private Set<Articolo> articoliSenzaParoleChiave = new HashSet<>();
 	private Set<Penna> penne = new HashSet<>();
 	private Set<Mostrina> mostrine = new HashSet<>();
 	private Set<Articolo> articoliNew = new HashSet<>();
@@ -58,6 +59,8 @@ public class Updater {
 		getArticoliFromRss();
 		getAllPenne();
 		getAllMostrine();
+		getAllarticoliSenzaParoleChiave();
+		
 		articoliNew.clear();
 
 		if (!articoliRSS.isEmpty()) {
@@ -88,7 +91,24 @@ public class Updater {
 			// aggiungo parole del titolo se non già presenti
 			a.setParoleChiave(paroleChiave);
 			for (ParolaChiave pca : a.getParoleChiave()) {
-				if (!paroleChiave.contains(pca))
+				if (!dao.getAllParoleChiave(a).contains(pca))
+					dao.addParoleChiave(pca);
+			}
+		}
+		for (Articolo a : articoliSenzaParoleChiave) {
+			System.out.println("articoliSenzaParoleChiave "+ articoliSenzaParoleChiave.size());
+			paroleChiave.clear();
+			// ottengo le parole chiave da web
+			paroleChiave.addAll(rss.getParoleGold(a));
+			// ottengo le parole chiave da db
+			paroleChiave.addAll(dao.getAllParoleChiave(a));
+			// ottengo le parole chiave dal titolo (valgono doppio)
+			paroleChiave.addAll(getParoleTitolo(a));
+			// aggiungo parole del titolo se non già presenti
+			a.setParoleChiave(paroleChiave);
+			System.out.println("paroleChiave "+ a.getParoleChiave().size());
+			for (ParolaChiave pca : a.getParoleChiave()) {
+				if (!dao.getAllParoleChiave(a).contains(pca))
 					dao.addParoleChiave(pca);
 			}
 		}
@@ -102,5 +122,20 @@ public class Updater {
 			}
 		}
 		return paroleChiave;
+	}
+	
+	private void getAllarticoliSenzaParoleChiave() {
+		articoliSenzaParoleChiave.clear();
+		Set<Articolo> articoligetAll = new HashSet<>();
+		articoligetAll.addAll(dao.getAll());
+		getAllArticoliDB();
+		for(Articolo a : articoliDB) {
+			if (!articoligetAll.contains(a)) {
+				articoliSenzaParoleChiave.add(a);
+				System.out.println("###Aggiunto "+ a.getTitolo());
+			}
+		}	
+		System.out.println("articoliDB "+ articoliDB.size());
+		System.out.println("getAll "+ dao.getAll().size());
 	}
 }
