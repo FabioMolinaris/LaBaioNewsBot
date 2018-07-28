@@ -95,7 +95,6 @@ public class Updater {
 	}
 
 	private Set<ParolaChiave> getParoleTitolo(Articolo a) {
-		paroleChiave.clear();
 		for (String p : a.getTitolo().split(" ")) {
 			if (p.length() > 3) {
 				String parola = p.replaceAll("[^a-zA-Z0-9]", "");
