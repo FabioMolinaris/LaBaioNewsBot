@@ -150,7 +150,7 @@ public class Model {
 		System.out.println("Task ieri " + firstTimeIeri);
 
 		// Task 3
-		KeepAliveTask kATasck = new KeepAliveTask(dao);
+		KeepAliveTask kATasck = new KeepAliveTask(dao, chatDao);
 		ScheduledExecutorService timerAlive = Executors.newScheduledThreadPool(1);
 
 		long delay = 1800;

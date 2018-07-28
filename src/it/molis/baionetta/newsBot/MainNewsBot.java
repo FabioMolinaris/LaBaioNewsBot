@@ -28,7 +28,7 @@ public class MainNewsBot {
 		model.setBot(bnb);
 		model.getAttivi();
 		model.newTask();
-		System.out.println("v3.0.0");	
+		System.out.println("v3.0.2");	
 	}
 
 }

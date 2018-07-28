@@ -13,20 +13,23 @@ import it.molis.baionetta.feed.ArticoloFeed;
 import it.molis.baionetta.feed.BackupText;
 
 public class Updater {
-	
+
 	private ArticoloFeed rss = new ArticoloFeed();
 	private ArticoloDAO dao = new ArticoloDAO();
-	
+
 	private Set<Articolo> articoliRSS = new HashSet<>();
 	private Set<Articolo> articoliDB = new HashSet<>();
 	private Set<Penna> penne = new HashSet<>();
 	private Set<Mostrina> mostrine = new HashSet<>();
-	
+	private Set<Articolo> articoliNew = new HashSet<>();
+	private Set<ParolaChiave> paroleChiave = new HashSet<>();
+	private BackupText bt = new BackupText();
+
 	public Updater() {
 		this.mostrine.addAll(dao.getAllMostrine());
 		this.penne.addAll(dao.getAllPenne());
 	}
-	
+
 	public Set<Penna> getAllPenne() {
 		this.penne.clear();
 		this.penne.addAll(dao.getAllPenne());
@@ -38,7 +41,7 @@ public class Updater {
 		this.mostrine.addAll(dao.getAllMostrine());
 		return mostrine;
 	}
-	
+
 	public void getArticoliFromRss() {
 		articoliRSS.clear();
 		articoliRSS.addAll(rss.getArticoliFromRss());
@@ -55,13 +58,14 @@ public class Updater {
 		getArticoliFromRss();
 		getAllPenne();
 		getAllMostrine();
+		articoliNew.clear();
 
-		Set<Articolo> articoliNew = new HashSet<>();
 		if (!articoliRSS.isEmpty()) {
 			for (Articolo a : articoliRSS) {
 				if (!articoliDB.contains(a)) {
 					dao.addArticolo(a);
 					articoliNew.add(a);
+					bt.backupText(a);
 				}
 				if (!penne.contains(a.getPenna())) {
 					dao.addPenna(a.getPenna());
@@ -74,7 +78,7 @@ public class Updater {
 			}
 		}
 		for (Articolo a : articoliNew) {
-			Set<ParolaChiave> paroleChiave = new HashSet<>();
+			paroleChiave.clear();
 			// ottengo le parole chiave da web
 			paroleChiave.addAll(rss.getParoleGold(a));
 			// ottengo le parole chiave da db
@@ -84,18 +88,14 @@ public class Updater {
 			// aggiungo parole del titolo se non già presenti
 			a.setParoleChiave(paroleChiave);
 			for (ParolaChiave pca : a.getParoleChiave()) {
-				if (!dao.getAllParoleChiave(a).contains(pca))
+				if (!paroleChiave.contains(pca))
 					dao.addParoleChiave(pca);
 			}
-			BackupText bt = new BackupText();
-			bt.backupText(a);
 		}
 	}
 
 	private Set<ParolaChiave> getParoleTitolo(Articolo a) {
-
-		Set<ParolaChiave> paroleChiave = new HashSet<>();
-
+		paroleChiave.clear();
 		for (String p : a.getTitolo().split(" ")) {
 			if (p.length() > 3) {
 				String parola = p.replaceAll("[^a-zA-Z0-9]", "");
@@ -104,5 +104,4 @@ public class Updater {
 		}
 		return paroleChiave;
 	}
-
 }
