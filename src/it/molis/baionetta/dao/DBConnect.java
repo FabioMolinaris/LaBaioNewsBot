@@ -8,7 +8,7 @@ import com.mchange.v2.c3p0.DataSources;
 
 public class DBConnect {
 
-	private static String jdbcURL = "jdbc:mysql://localhost/baionetta?autoReconnect=true";
+	private static String jdbcURL = "jdbc:mysql://localhost/baionetta?tcpKeepAlive=true&autoReconnect=true";
 
 	private static DataSource ds;
 

@@ -8,7 +8,7 @@ import com.mchange.v2.c3p0.DataSources;
 
 public class DBBotConnect {
 
-	private static String jdbcURL = "jdbc:mysql://localhost/baionettaBot?autoReconnect=true";
+	private static String jdbcURL = "jdbc:mysql://localhost/baionettaBot?tcpKeepAlive=true&autoReconnect=true";
 
 	private static DataSource ds;
 
