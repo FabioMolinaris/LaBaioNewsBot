@@ -149,16 +149,6 @@ public class Model {
 		// ttIeri.run();
 		System.out.println("Task ieri " + firstTimeIeri);
 
-		// Task 3
-		KeepAliveTask kATasck = new KeepAliveTask(dao, chatDao);
-		ScheduledExecutorService timerAlive = Executors.newScheduledThreadPool(1);
-
-		long delay = 1800;
-
-		timerAlive.scheduleAtFixedRate(kATasck, delay, delay, TimeUnit.SECONDS);
-		kATasck.run();
-		System.out.println("KeepAliveTask");
-		
 		// Task 4
 		TimerTaskFeed ttFeed = new TimerTaskFeed(updater);
 		ScheduledExecutorService timerFeed = Executors.newScheduledThreadPool(1);
@@ -168,6 +158,17 @@ public class Model {
 		timerFeed.scheduleAtFixedRate(ttFeed, delayFeed, delayFeed, TimeUnit.SECONDS);
 		ttFeed.run();
 		System.out.println("TimerTaskFeed");
+
+		// Task 3
+		KeepAliveTask kATasck = new KeepAliveTask(dao, chatDao, timerFeed, ttFeed);
+		ScheduledExecutorService timerAlive = Executors.newScheduledThreadPool(1);
+
+		long delay = 1800;
+
+		timerAlive.scheduleAtFixedRate(kATasck, delay, delay, TimeUnit.SECONDS);
+		kATasck.run();
+		System.out.println("KeepAliveTask");
+
 	}
 
 	public void getAttivi() {
@@ -179,5 +180,4 @@ public class Model {
 		this.baioNewsBot = bnb;
 	}
 
-	
 }

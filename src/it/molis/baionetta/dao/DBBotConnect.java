@@ -18,14 +18,16 @@ public class DBBotConnect {
 			try {
 				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", "gtik9328"));
 			} catch (SQLException e) {
-				e.printStackTrace();
+				ds = null;
+				//e.printStackTrace();
 			}
 		}
 		try {
 			Connection c = ds.getConnection();
 			return c;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			ds = null;
+			//e.printStackTrace();
 			return null;
 		}
 	}
