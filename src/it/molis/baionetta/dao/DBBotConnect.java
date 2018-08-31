@@ -8,7 +8,7 @@ import com.mchange.v2.c3p0.DataSources;
 
 public class DBBotConnect {
 
-	private static String jdbcURL = "jdbc:mysql://localhost/baionettaBot?tcpKeepAlive=true&autoReconnect=true";
+	private static String jdbcURL = "jdbc:mariadb://localhost:3307/baionettaBot";//"jdbc:mysql://localhost/baionettaBot?tcpKeepAlive=true&autoReconnect=true";
 
 	private static DataSource ds;
 
@@ -16,7 +16,7 @@ public class DBBotConnect {
 
 		if (ds == null) {
 			try {
-				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", "gtik9328"));
+				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", " ... "));
 			} catch (SQLException e) {
 				ds = null;
 				//e.printStackTrace();

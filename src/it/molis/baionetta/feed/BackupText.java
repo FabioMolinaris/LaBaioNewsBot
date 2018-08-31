@@ -25,8 +25,8 @@ public class BackupText {
 	    try
 	    {
 	      Writer out = new OutputStreamWriter(new FileOutputStream(
-	        "/home/fabio/Dropbox/La baionetta - munizioni/BaioBackupAutomatico/" + a.getPenna() + "/" + a.getData() + "-" + titolo), "UTF-8");
-
+	        //"/home/fabio/Dropbox/La baionetta - munizioni/BaioBackupAutomatico/" + a.getPenna() + "/" + a.getData() + "-" + titolo), "UTF-8");
+	          "/volume1/Dropbox/La baionetta - munizioni/BaioBackupAutomatico/" + a.getPenna() + "/" + a.getData() + "-" + titolo), "UTF-8");
 	      System.out.println(titolo);
 	      out.write(testo);
 	      out.close();
