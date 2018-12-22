@@ -17,16 +17,18 @@ import it.molis.baionetta.beans.Penna;
 
 public class ArticoloDAO {
 
-	Map<Articolo, Articolo> articoli = new HashMap<>();
+	private Map<Articolo, Articolo> articoli = new HashMap<>();
 	private Set<Penna> penne = new HashSet<>();
 	private Set<Mostrina> mostrine = new HashSet<>();
+	
+	private Connection conn = DBConnect.getConnection();
 
 	public Set<Articolo> getAll() {
 
 		final String sql = "SELECT titolo, mostrina, penna, articolo.link, parolaChiave.parola, data, peso FROM articolo, parolaChiave where parolaChiave.link = articolo.link";
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			ResultSet rs = st.executeQuery();
 
@@ -55,11 +57,12 @@ public class ArticoloDAO {
 
 			}
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("Errore di connessione al Database.");
+			//throw new RuntimeException("Errore di connessione al Database.");
+			return new HashSet<Articolo>();
 		}
 
 		return new HashSet<Articolo>(articoli.values());
@@ -70,7 +73,7 @@ public class ArticoloDAO {
 		Set<Articolo> articoli = new HashSet<>();
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			ResultSet rs = st.executeQuery();
 
@@ -81,7 +84,7 @@ public class ArticoloDAO {
 			}
 
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -116,7 +119,7 @@ public class ArticoloDAO {
 		final String sql = "INSERT INTO articolo (titolo, mostrina, penna, link, data)" + " VALUES (?, ?, ?, ?, ?)";
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 
 			st.setString(1, a.getTitolo());
@@ -130,7 +133,7 @@ public class ArticoloDAO {
 			st.executeUpdate();
 
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -143,7 +146,7 @@ public class ArticoloDAO {
 		final String sql = "INSERT INTO parolaChiave (parola, link, peso)" + " VALUES (?, ?, ?)";
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 
 			st.setString(1, pc.getParola());
@@ -153,7 +156,7 @@ public class ArticoloDAO {
 			st.executeUpdate();
 
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -168,7 +171,7 @@ public class ArticoloDAO {
 		Set<ParolaChiave> paroleChiave = new HashSet<ParolaChiave>();
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 
 			st.setString(1, a.getLink());
@@ -181,7 +184,7 @@ public class ArticoloDAO {
 			}
 
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -197,7 +200,7 @@ public class ArticoloDAO {
 		final String sql = "INSERT INTO penna (nome) VALUES (?)";
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 
 			st.setString(1, p.getNome());
@@ -205,7 +208,7 @@ public class ArticoloDAO {
 			st.executeUpdate();
 
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -218,7 +221,7 @@ public class ArticoloDAO {
 		final String sql = "INSERT INTO mostrina (nome) VALUES (?)";
 
 		try {
-			Connection conn = DBConnect.getConnection();
+			//Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 
 			st.setString(1, m.getNome());
@@ -226,7 +229,7 @@ public class ArticoloDAO {
 			st.executeUpdate();
 
 			st.close();
-			conn.close();
+			//conn.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();

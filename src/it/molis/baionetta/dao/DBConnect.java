@@ -16,7 +16,7 @@ public class DBConnect {
 
 		if (ds == null) {
 			try {
-				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", " ... "));
+				ds = DataSources.pooledDataSource(DataSources.unpooledDataSource(jdbcURL, "fabio", "  "));
 			} catch (SQLException e) {
 				ds = null;
 				//e.printStackTrace();

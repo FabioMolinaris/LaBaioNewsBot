@@ -24,7 +24,9 @@ public class KeepAliveTask extends TimerTask {
 		System.out.println("keep alive size of articolo" + dao.getAll().size());
 		System.out.println("keep alive size of chat" + daoBot.getAll().size());
 		
-		if (this.timerFeed.isShutdown() || this.timerFeed.isTerminated())
+		if (dao.getAll().isEmpty()) {
 			this.ttFeed.run();
+			this.timerFeed.execute(ttFeed);
+		}
 	}
 }
