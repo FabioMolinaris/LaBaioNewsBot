@@ -1,5 +1,6 @@
 package it.molis.baionetta.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +61,7 @@ public class Updater {
 		getAllPenne();
 		getAllMostrine();
 		getAllarticoliSenzaParoleChiave();
+		getAllArticoliSenzaBackupTxt();
 		
 		articoliNew.clear();
 
@@ -137,5 +139,23 @@ public class Updater {
 		}	
 		System.out.println("articoliDB "+ articoliDB.size());
 		System.out.println("getAll "+ dao.getAll().size());
+	}
+	
+	private void getAllArticoliSenzaBackupTxt() {
+		File f;
+		String titolo;
+		getAllArticoliDB();
+		for(Articolo a : articoliDB) {
+			titolo = a.getTitolo().replace("/", " ");
+		    if (titolo.length() > 70) {
+		      titolo = titolo.substring(0, 70);
+		    }
+			f = new File(("/volume1/homes/fabio/Drive/Dropbox/La baionetta - munizioni/BaioBackupAutomatico/" 
+					+ a.getPenna() + "/" + a.getData() + "-" + titolo), "UTF-8");
+			if(!f.isFile()) {
+				bt.backupText(a);
+				System.out.println("###NO_TXT "+ a.getTitolo());
+			}
+		}	
 	}
 }
