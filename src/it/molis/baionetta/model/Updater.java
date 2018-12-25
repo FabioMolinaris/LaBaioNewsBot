@@ -146,13 +146,33 @@ public class Updater {
 		String titolo;
 		getAllArticoliDB();
 		for(Articolo a : articoliDB) {
+			
 			titolo = a.getTitolo().replace("/", " ");
-		    if (titolo.length() > 70) {
-		      titolo = titolo.substring(0, 70);
-		    }
+			titolo = titolo.replace(" ", "_");
+			titolo = titolo.replace("ì", "i");
+			titolo = titolo.replace("ò", "o");
+			titolo = titolo.replace("à", "a");
+			titolo = titolo.replace("á", "a");
+			titolo = titolo.replace("ù", "u");
+			titolo = titolo.replace("è", "e");
+			titolo = titolo.replace("é", "e");
+			titolo = titolo.replace("È", "E");
+			titolo = titolo.replace("'", "");
+			titolo = titolo.replace("\"", "");
+			titolo = titolo.replace("«", "");
+			titolo = titolo.replace("»", "");
+			titolo = titolo.replace("“", "");
+			titolo = titolo.replace("”", "");
+			titolo = titolo.replace("–", "-");
+			titolo = titolo.replace("’", "");
+			
+		    if (titolo.length() > 50) 
+		    	titolo = titolo.substring(0, 50); 
+		    
 			f = new File(("/volume1/homes/fabio/Drive/Dropbox/La baionetta - munizioni/BaioBackupAutomatico/" 
-					+ a.getPenna() + "/" + a.getData() + "-" + titolo), "UTF-8");
-			if(!f.isFile()) {
+					+ a.getPenna() + "/" + a.getData() + "-" + titolo + ".txt"), "UTF-8");
+			
+			if(!f.exists()) {
 				bt.backupText(a);
 				System.out.println("###NO_TXT "+ a.getTitolo());
 			}
