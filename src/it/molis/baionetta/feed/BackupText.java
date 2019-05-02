@@ -34,6 +34,7 @@ public class BackupText {
 		titolo = titolo.replace("”", "");
 		titolo = titolo.replace("–", "-");
 		titolo = titolo.replace("’", "");
+		titolo = titolo.replace(":", "");
 		
 	    if (titolo.length() > 50) 
 	    	titolo = titolo.substring(0, 50);
