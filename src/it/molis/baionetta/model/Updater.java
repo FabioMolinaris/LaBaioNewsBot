@@ -61,24 +61,24 @@ public class Updater {
 		getAllPenne();
 		getAllMostrine();
 		getAllarticoliSenzaParoleChiave();
-		getAllArticoliSenzaBackupTxt();
+		//getAllArticoliSenzaBackupTxt();
 		
 		articoliNew.clear();
 
 		if (!articoliRSS.isEmpty()) {
 			for (Articolo a : articoliRSS) {
-				if (!articoliDB.contains(a)) {
-					dao.addArticolo(a);
-					articoliNew.add(a);
-					bt.backupText(a);
+				if (!mostrine.contains(a.getMostrina())) {
+					dao.addMostrina(a.getMostrina());
+					mostrine.add(a.getMostrina());
 				}
 				if (!penne.contains(a.getPenna())) {
 					dao.addPenna(a.getPenna());
 					penne.add(a.getPenna());
 				}
-				if (!mostrine.contains(a.getMostrina())) {
-					dao.addMostrina(a.getMostrina());
-					mostrine.add(a.getMostrina());
+				if (!articoliDB.contains(a)) {
+					dao.addArticolo(a);
+					articoliNew.add(a);
+					bt.backupText(a);
 				}
 			}
 		}
